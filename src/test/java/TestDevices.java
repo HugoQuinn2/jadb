@@ -1,6 +1,7 @@
 import com.hq.jadb.controller.AdbController;
 import com.hq.jadb.model.Device;
 import com.hq.jadb.model.DeviceApp;
+import com.hq.jadb.model.File;
 import org.junit.Test;
 
 import java.util.List;
@@ -84,5 +85,23 @@ public class TestDevices {
         String ip = "google.com";
 
         System.out.println(device.ping(ip));
+    }
+
+    @Test
+    public void getFilesFrom() {
+        adbController = new AdbController();
+        Device device = adbController.getDevices().getFirst();
+        List<File> files = device.getFilesFrom("/");
+
+        System.out.println(files);
+    }
+
+    @Test
+    public void getFilesFromFileFolder() {
+        adbController = new AdbController();
+        Device device = adbController.getDevices().getFirst();
+        List<File> files = device.getFilesFrom("/");
+
+        System.out.println(device.getFilesFrom(files.getFirst()));
     }
 }

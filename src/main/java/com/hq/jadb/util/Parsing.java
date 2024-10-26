@@ -2,6 +2,7 @@ package com.hq.jadb.util;
 
 import com.hq.jadb.constant.DeviceLevel;
 import com.hq.jadb.constant.DeviceState;
+import com.hq.jadb.constant.FileType;
 import com.hq.jadb.model.Device;
 
 import java.util.List;
@@ -107,5 +108,34 @@ public class Parsing {
             return null;
 
         return appName;
+    }
+
+    public static String extractOutputStat(String output) {
+        String[] data = output.split(",");
+        // File, Size B, User, Last Modify, Permission -> FileType, User, Size, Date, Name
+        return  String.format("%s,%s,%s,%s,%s", getFileType(data[4]), data[2], data[1], data[3], List.of(data[0].split("/")).getLast() );
+    }
+
+    private static FileType getFileType(String file) {
+        if (file.startsWith("d")) {
+            return FileType.FOLDER;
+        } else if (file.startsWith("-")) {
+            return FileType.FILE;
+        } else if (file.startsWith("i")) {
+            return FileType.SYMBOLIC_LINK;
+        }
+
+        return FileType.INDETERMINATE;
+    }
+
+    public static FileType textToFileType(String fileType) {
+        if (fileType.equals("FOLDER"))
+            return FileType.FOLDER;
+        if (fileType.equals("FILE"))
+            return FileType.FILE;
+        if (fileType.equals("SYMBOLIC_LINK"))
+            return FileType.SYMBOLIC_LINK;
+
+        return FileType.INDETERMINATE;
     }
 }

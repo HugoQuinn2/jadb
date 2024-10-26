@@ -4,6 +4,7 @@ import com.hq.jadb.config.AdbConfig;
 import com.hq.jadb.constant.Command;
 import com.hq.jadb.constant.DeviceLevel;
 import com.hq.jadb.constant.DeviceState;
+import com.hq.jadb.constant.FileType;
 import com.hq.jadb.model.Device;
 import com.hq.jadb.model.DeviceApp;
 import com.hq.jadb.model.DeviceData;
@@ -11,6 +12,7 @@ import com.hq.jadb.model.File;
 import com.hq.jadb.service.AdbService;
 import com.hq.jadb.util.Parsing;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -145,8 +147,59 @@ public abstract class DeviceController implements DeviceInterface{
     }
 
     @Override
-    public List<File> getFiles(String path) {
-        return List.of();
+    public List<File> getFilesFrom(String remotePath) {
+        if (!remotePath.endsWith("/"))
+            return null;
+
+        List<File> fileDevices = new ArrayList<>();
+        List<String> lsFiles = lsM(remotePath);
+        String formatStat = "'%n,%s,%U,%y,%A'";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        for (String lsFile : lsFiles) {
+            String absolutePath = remotePath + lsFile;
+            String commandText = String.format("%s %s %s" ,
+                    Command.STAT.command(device.getDeviceName()),
+                    formatStat,
+                    absolutePath);
+
+            List<String> command = Parsing.buildCommand(commandText);
+            String response = adbService.executeCommand(command);
+
+            String[] reformatStat = Parsing.extractOutputStat(response).split(",");
+
+            try {
+                // FileType, User, Size, Date, Name
+                File file = File
+                        .builder()
+                        .fileType(Parsing.textToFileType(reformatStat[0]))
+                        .user(reformatStat[1])
+                        .size(Long.parseLong(reformatStat[2]))
+                        .lastModify(format.parse(reformatStat[3]))
+                        .fileName(reformatStat[4])
+                        .path(remotePath)
+                        .absolutePath(absolutePath)
+                        .build();
+
+                if (file.getFileType().equals(FileType.FOLDER))
+                    file.setAbsolutePath(file.getAbsolutePath() + "/");
+
+                fileDevices.add(file);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+
+        }
+
+        return fileDevices;
+    }
+
+    @Override
+    public List<File> getFilesFrom(File file) {
+        if (!file.getFileType().equals(FileType.FOLDER))
+            return null;
+
+        return getFilesFrom(file.getAbsolutePath());
     }
 
     @Override
@@ -193,6 +246,15 @@ public abstract class DeviceController implements DeviceInterface{
             return baseApk[1];
 
         return null;
+    }
+
+    private List<String> lsM(String from) {
+        List<String> command = Parsing.buildCommand(Command.LS_M.command(device.getDeviceName(), from));
+        return List.of(adbService.executeCommand(command)
+                .replaceAll("\n", "")
+                .replaceAll("\r", "")
+                .replace(" ", "")
+                .split(","));
     }
 
 }
