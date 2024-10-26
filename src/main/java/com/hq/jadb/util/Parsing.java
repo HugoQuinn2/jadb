@@ -1,0 +1,111 @@
+package com.hq.jadb.util;
+
+import com.hq.jadb.constant.DeviceLevel;
+import com.hq.jadb.constant.DeviceState;
+import com.hq.jadb.model.Device;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Parsing {
+    public static List<String> buildCommand(String args) {
+        return List.of(args.split(" "));
+    }
+
+    public static Device mapDevice(String line) {
+        List<String> data = List.of(line.split("\t"));
+
+        if (data.size() != 2)
+            return null;
+
+        return new Device(
+                data.get(0),
+                null,
+                DeviceLevel.SHELL,
+                mapDeviceState(data.get(1)),
+                null,
+                null
+        );
+    }
+
+    public static DeviceState mapDeviceState(String state){
+        if (state.contains("device"))
+            return DeviceState.DEVICE;
+        if (state.contains("offline"))
+            return DeviceState.OFFLINE;
+
+        return null;
+    }
+
+    public static String extractIp(String response) {
+        String pat = "inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})";
+
+        Pattern pattern = Pattern.compile(pat);
+        Matcher matcher = pattern.matcher(response);
+
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    public static String extractMAC(String response) {
+        String pat = "link/ether ([0-9a-fA-F:]{17})";
+
+        Pattern pattern = Pattern.compile(pat);
+        Matcher matcher = pattern.matcher(response);
+
+        return matcher.find() ? matcher.group().replace("link/ether ", "").toUpperCase() : null;
+    }
+
+    public static long extractStorage(String response) {
+        long totalUsed = 0;
+        long totalAvailable = 0;
+
+        String[] lines = response.split("\n");
+
+        for (String line : lines) {
+            String[] columns = line.trim().split("\\s+");
+            if (columns[0].startsWith("/dev/block/")) {
+                totalUsed += Long.parseLong(columns[2]) + Long.parseLong(columns[3]);
+                totalAvailable += Long.parseLong(columns[3]);
+            }
+        }
+
+        return totalUsed;
+    }
+
+    public static long extractStorageUsed(String response) {
+        long totalAvailable = 0;
+
+        String[] lines = response.split("\n");
+
+        for (String line : lines) {
+            String[] columns = line.trim().split("\\s+");
+            if (columns[0].startsWith("/dev/block/")) {
+                totalAvailable += Long.parseLong(columns[3]);
+            }
+        }
+
+        return totalAvailable;
+    }
+
+    public static String extractPackage(String response) {
+        String[] extract = response.split(":");
+        if (extract.length == 2)
+            return extract[1];
+
+        return null;
+    }
+
+    public static String extractNameFromBaseApk(String baseApk) {
+        if (baseApk == null)
+            return null;
+
+        List<String> fullBaseApk = List.of(baseApk.split("/"));
+        String appName = fullBaseApk.getLast().replace(".apk", "");
+
+        if (appName.contains("base"))
+            return null;
+
+        return appName;
+    }
+}
