@@ -86,8 +86,6 @@ public abstract class DeviceController implements DeviceInterface{
 
         ExecutorService executor = Executors.newFixedThreadPool(allTasks.size());
         try {
-
-
             for (int i = 0 ; i < allTasks.size(); i += AdbConfig.maxThread) {
                 List<Callable<DeviceApp>> batchTasks = allTasks.subList(i, Math.min(i + AdbConfig.maxThread, allTasks.size()));
                 List<Future<DeviceApp>> futures = executor.invokeAll(batchTasks);
@@ -144,6 +142,16 @@ public abstract class DeviceController implements DeviceInterface{
         List<String> command = Parsing.buildCommand(Command.PUSH.command(device.getDeviceName(), localPath, remotePath));
         String response = adbService.executeCommand(command);
         return response.contains("1 file pushed");
+    }
+
+    @Override
+    public boolean pull(File file, String localPath) {
+        return pull(file.getAbsolutePath(), localPath);
+    }
+
+    @Override
+    public boolean push(String localPath, File file) {
+        return push(localPath, file.getAbsolutePath());
     }
 
     @Override

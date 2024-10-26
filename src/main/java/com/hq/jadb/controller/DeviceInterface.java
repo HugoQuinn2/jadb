@@ -15,6 +15,8 @@ public interface DeviceInterface {
     public boolean uninstall(DeviceApp deviceApp);
     public boolean pull(String remotePath, String localPath);
     public boolean push(String localPath, String remotePath);
+    public boolean pull(File file, String localPath);
+    public boolean push(String localPath, File file);
     public List<File> getFilesFrom(String remotePath);
     public List<File> getFilesFrom(File file);
     public void root();
