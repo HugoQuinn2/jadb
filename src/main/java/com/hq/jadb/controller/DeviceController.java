@@ -10,6 +10,7 @@ import com.hq.jadb.model.DeviceApp;
 import com.hq.jadb.model.DeviceData;
 import com.hq.jadb.model.File;
 import com.hq.jadb.service.AdbService;
+import com.hq.jadb.util.DeviceUtils;
 import com.hq.jadb.util.Parsing;
 
 import java.text.SimpleDateFormat;
@@ -22,52 +23,69 @@ import java.util.concurrent.Future;
 
 public abstract class DeviceController implements DeviceInterface{
     private final AdbService adbService;
+    private DeviceUtils deviceUtils;
     protected Device device;
 
     public DeviceController(Device device) {
         adbService = new AdbService();
+        this.deviceUtils = new DeviceUtils();
         this.device = device;
+    }
+
+    // *****************************************************************
+    // **                    Getter functions                         **
+    // *****************************************************************
+    @Override
+    public String getIp(){
+        String responseWLAN0 = adbService.executeCommand(Parsing.buildCommand(Command.WLAN0.command(device.getDeviceName())));
+        return Parsing.extractIp(responseWLAN0);
+    }
+
+    @Override
+    public String getMac(){
+        String responseWLAN0 = adbService.executeCommand(Parsing.buildCommand(Command.WLAN0.command(device.getDeviceName())));
+        return Parsing.extractMAC(responseWLAN0);
+    }
+
+    @Override
+    public String getSimContract(){
+        return adbService.executeCommand(Parsing.buildCommand(Command.SIM_CONTRACT.command(device.getDeviceName())));
+    }
+
+    @Override
+    public String getAndroidId(){
+        return adbService.executeCommand(Parsing.buildCommand(Command.ANDROID_ID.command(device.getDeviceName())));
+    }
+
+    @Override
+    public String getAndroidVersion(){
+        return adbService.executeCommand(Parsing.buildCommand(Command.ANDROID_VERSION.command(device.getDeviceName())));
+    }
+
+    @Override
+    public long getStorage(){
+        String responseStorage = adbService.executeCommand(Parsing.buildCommand(Command.STORAGE.command(device.getDeviceName())));
+        return Parsing.extractStorage(responseStorage);
+    }
+
+    @Override
+    public long getStorageUsed(){
+        String responseStorage = adbService.executeCommand(Parsing.buildCommand(Command.STORAGE.command(device.getDeviceName())));
+        return Parsing.extractStorageUsed(responseStorage);
     }
 
     @Override
     public DeviceData getDeviceData() {
-        String responseStorage = adbService.executeCommand(Parsing.buildCommand(Command.STORAGE.command(device.getDeviceName())));
-        String responseWLAN0 = adbService.executeCommand(Parsing.buildCommand(Command.WLAN0.command(device.getDeviceName())));
-
         return DeviceData
                 .builder()
-                .ip(Parsing.extractIp(responseWLAN0))
-                .mac(Parsing.extractMAC(responseWLAN0))
-                .androidVersion(adbService.executeCommand(
-                        Parsing.buildCommand(Command.ANDROID_VERSION.command(device.getDeviceName()))))
-                .simContract(adbService.executeCommand(
-                        Parsing.buildCommand(Command.SIM_CONTRACT.command(device.getDeviceName()))))
-                .androidId(adbService.executeCommand(
-                        Parsing.buildCommand(Command.ANDROID_ID.command(device.getDeviceName()))))
-                .storage(Parsing.extractStorage(responseStorage))
-                .storageUsed(Parsing.extractStorageUsed(responseStorage))
+                .ip(getIp())
+                .mac(getMac())
+                .androidVersion(getAndroidVersion())
+                .simContract(getSimContract())
+                .androidId(getAndroidId())
+                .storage(getStorage())
+                .storageUsed(getStorageUsed())
                 .build();
-    }
-
-    @Override
-    public boolean ping(String ip) {
-        List<String> command = Parsing.buildCommand(Command.PING.command(device.getDeviceName(), ip));
-        String response = adbService.executeCommand(command);
-        return !response.contains("100% packet loss");
-    }
-
-    @Override
-    public boolean install(String pathApk) {
-        List<String> command = Parsing.buildCommand(Command.INSTALL.command(device.getDeviceName(), pathApk));
-        String response = adbService.executeCommand(command);
-        return response.contains("Performing Streamed Install\nSuccess\n");
-    }
-
-    @Override
-    public boolean uninstall(String packageApp) {
-        List<String> command = Parsing.buildCommand(Command.UNINSTALL.command(device.getDeviceName(), packageApp));
-        String response = adbService.executeCommand(command);
-        return response.contains("Success");
     }
 
     @Override
@@ -81,7 +99,7 @@ public abstract class DeviceController implements DeviceInterface{
         List<Callable<DeviceApp>> allTasks = new ArrayList<>();
 
         for (String pack : packages) {
-            allTasks.add(() -> createDeviceApp(device, pack));
+            allTasks.add(() -> deviceUtils.createDeviceApp(device, pack));
         }
 
         ExecutorService executor = Executors.newFixedThreadPool(allTasks.size());
@@ -103,55 +121,12 @@ public abstract class DeviceController implements DeviceInterface{
         return deviceApps;
     }
 
-//    @Override
-//    public void getApps(Device device) {
-//        List<String> commandPackage = Parsing.buildCommand(Command.USER_PACKAGES.command(device.getDeviceName()));
-//        String responsePackages = adbService.executeCommand(commandPackage);
-//        List<DeviceApp> deviceApps = new ArrayList<>();
-//
-//        List<String> packages = List.of(responsePackages.split("\n"));
-//        List<Callable<DeviceApp>> ioTasks = new ArrayList<>();
-//
-//        for (String pack : packages) {
-//            ioTasks.add(() -> createDeviceApp(device, pack));
-//        }
-//
-//        try {
-//            ExecutorService executor = Executors.newFixedThreadPool(ioTasks.size());
-//            List<Future<DeviceApp>> futures = executor.invokeAll(ioTasks);
-//
-//            for (Future<DeviceApp> future : futures) {
-//                deviceApps.add(future.get());
-//            }
-//        } catch (Exception e) {
-//            System.err.println(e);
-//        }
-//
-//        device.setDeviceApps(deviceApps);
-//    }
-
     @Override
-    public boolean pull(String remotePath, String localPath) {
-        List<String> command = Parsing.buildCommand(Command.PULL.command(device.getDeviceName(), remotePath, localPath));
-        String response = adbService.executeCommand(command);
-        return response.contains("1 file pulled");
-    }
+    public List<File> getFilesFrom(File file) {
+        if (!file.getFileType().equals(FileType.FOLDER))
+            return null;
 
-    @Override
-    public boolean push(String localPath, String remotePath) {
-        List<String> command = Parsing.buildCommand(Command.PUSH.command(device.getDeviceName(), localPath, remotePath));
-        String response = adbService.executeCommand(command);
-        return response.contains("1 file pushed");
-    }
-
-    @Override
-    public boolean pull(File file, String localPath) {
-        return pull(file.getAbsolutePath(), localPath);
-    }
-
-    @Override
-    public boolean push(String localPath, File file) {
-        return push(localPath, file.getAbsolutePath());
+        return getFilesFrom(file.getAbsolutePath());
     }
 
     @Override
@@ -160,7 +135,7 @@ public abstract class DeviceController implements DeviceInterface{
             return null;
 
         List<File> fileDevices = new ArrayList<>();
-        List<String> lsFiles = lsM(remotePath);
+        List<String> lsFiles = deviceUtils.lsM(device,remotePath);
         String formatStat = "'%n,%s,%U,%y,%A'";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -202,12 +177,84 @@ public abstract class DeviceController implements DeviceInterface{
         return fileDevices;
     }
 
+    // *****************************************************************
+    // **                    Action functions                         **
+    // *****************************************************************
     @Override
-    public List<File> getFilesFrom(File file) {
-        if (!file.getFileType().equals(FileType.FOLDER))
-            return null;
+    public boolean ping(String ip) {
+        List<String> command = Parsing.buildCommand(Command.PING.command(device.getDeviceName(), ip));
+        String response = adbService.executeCommand(command);
+        return !response.contains("100% packet loss");
+    }
 
-        return getFilesFrom(file.getAbsolutePath());
+    @Override
+    public boolean install(String pathApk) {
+        List<String> command = Parsing.buildCommand(Command.INSTALL.command(device.getDeviceName(), pathApk));
+        String response = adbService.executeCommand(command);
+        return response.contains("Performing Streamed Install\nSuccess\n");
+    }
+
+    @Override
+    public boolean uninstall(String packageApp) {
+        List<String> command = Parsing.buildCommand(Command.UNINSTALL.command(device.getDeviceName(), packageApp));
+        String response = adbService.executeCommand(command);
+        return response.contains("Success");
+    }
+
+    @Override
+    public boolean uninstall(DeviceApp deviceApp) {
+        return uninstall(deviceApp.getAppPackage());
+    }
+
+//    @Override
+//    public void getApps(Device device) {
+//        List<String> commandPackage = Parsing.buildCommand(Command.USER_PACKAGES.command(device.getDeviceName()));
+//        String responsePackages = adbService.executeCommand(commandPackage);
+//        List<DeviceApp> deviceApps = new ArrayList<>();
+//
+//        List<String> packages = List.of(responsePackages.split("\n"));
+//        List<Callable<DeviceApp>> ioTasks = new ArrayList<>();
+//
+//        for (String pack : packages) {
+//            ioTasks.add(() -> createDeviceApp(device, pack));
+//        }
+//
+//        try {
+//            ExecutorService executor = Executors.newFixedThreadPool(ioTasks.size());
+//            List<Future<DeviceApp>> futures = executor.invokeAll(ioTasks);
+//
+//            for (Future<DeviceApp> future : futures) {
+//                deviceApps.add(future.get());
+//            }
+//        } catch (Exception e) {
+//            System.err.println(e);
+//        }
+//
+//        device.setDeviceApps(deviceApps);
+//    }
+
+    @Override
+    public boolean pull(String remotePath, String localPath) {
+        List<String> command = Parsing.buildCommand(Command.PULL.command(device.getDeviceName(), remotePath, localPath));
+        String response = adbService.executeCommand(command);
+        return response.contains("1 file pulled");
+    }
+
+    @Override
+    public boolean pull(File file, String localPath) {
+        return pull(file.getAbsolutePath(), localPath);
+    }
+
+    @Override
+    public boolean push(String localPath, String remotePath) {
+        List<String> command = Parsing.buildCommand(Command.PUSH.command(device.getDeviceName(), localPath, remotePath));
+        String response = adbService.executeCommand(command);
+        return response.contains("1 file pushed");
+    }
+
+    @Override
+    public boolean push(String localPath, File file) {
+        return push(localPath, file.getAbsolutePath());
     }
 
     @Override
@@ -226,43 +273,10 @@ public abstract class DeviceController implements DeviceInterface{
     }
 
     @Override
-    public boolean uninstall(DeviceApp deviceApp) {
-        return uninstall(deviceApp.getAppPackage());
-    }
-
-    private DeviceApp createDeviceApp(Device device ,String pack) {
-        String packageName = Parsing.extractPackage(pack);
-        if (packageName != null) {
-            String baseApk = getBaseApk(device, packageName);
-            return DeviceApp
-                    .builder()
-                    .appPackage(packageName)
-                    .baseApk(baseApk)
-                    .appName(Parsing.extractNameFromBaseApk(baseApk))
-                    .build();
-        }
-
-        return null;
-    }
-
-    private String getBaseApk(Device device,String pack) {
-        List<String> command = Parsing.buildCommand(Command.PACK_PATH.command(device.getDeviceName(), pack));
-        String response = adbService.executeCommand(command);
-
-        String[] baseApk = response.split(":");
-        if (baseApk.length == 2)
-            return baseApk[1];
-
-        return null;
-    }
-
-    private List<String> lsM(String from) {
-        List<String> command = Parsing.buildCommand(Command.LS_M.command(device.getDeviceName(), from));
-        return List.of(adbService.executeCommand(command)
-                .replaceAll("\n", "")
-                .replaceAll("\r", "")
-                .replace(" ", "")
-                .split(","));
+    public String shell(String command) {
+        String newCommand = String.format("-s %s shell %s", device.getDeviceName(), command);
+        List<String> commandList = Parsing.buildCommand(newCommand);
+        return adbService.executeCommand(commandList);
     }
 
 }

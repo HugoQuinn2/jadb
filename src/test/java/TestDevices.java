@@ -104,4 +104,13 @@ public class TestDevices {
 
         System.out.println(device.getFilesFrom(files.getFirst()));
     }
+
+    @Test
+    public void shell() {
+        adbController = new AdbController();
+        Device device = adbController.getDevices().getFirst();
+
+        String command = "toybox";
+        System.out.println(device.shell(command));
+    }
 }

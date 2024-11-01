@@ -5,13 +5,27 @@ import com.hq.jadb.constant.DeviceState;
 import com.hq.jadb.constant.FileType;
 import com.hq.jadb.model.Device;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parsing {
     public static List<String> buildCommand(String args) {
-        return List.of(args.split(" "));
+        List<String> commandParts = new ArrayList<>();
+
+        Pattern pattern = Pattern.compile("'([^']*)'|\\S+");
+        Matcher matcher = pattern.matcher(args);
+
+        while (matcher.find()) {
+            if (matcher.group(1) != null) {
+                commandParts.add(matcher.group(1));
+            } else {
+                commandParts.add(matcher.group());
+            }
+        }
+
+        return commandParts;
     }
 
     public static Device mapDevice(String line) {

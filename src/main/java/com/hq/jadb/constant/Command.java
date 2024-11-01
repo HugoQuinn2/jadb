@@ -19,7 +19,7 @@ public enum Command {
     RAM             ("-s %s shell cat /proc/meminfo"),
     CONTACTS        ("-s %s shell content query --uri content://contacts/phones/"),
     CALL_PHONE      ("-s %s shell am start -a android.intent.action.CALL -d tel:%s"),
-    USER_PACKAGES        ("-s %s shell pm list packages"),
+    USER_PACKAGES   ("-s %s shell pm list packages"),
     PACKAGES_INFO   ("-s %s shell dumpsys package %s"),
     PS              ("-s %s shell ps"),
     TOP             ("-s %s shell top -n 1"),
