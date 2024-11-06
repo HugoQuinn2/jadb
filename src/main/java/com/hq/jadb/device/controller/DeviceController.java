@@ -1,17 +1,17 @@
-package com.hq.jadb.controller;
+package com.hq.jadb.device.controller;
 
-import com.hq.jadb.config.AdbConfig;
-import com.hq.jadb.constant.Command;
-import com.hq.jadb.constant.DeviceLevel;
-import com.hq.jadb.constant.DeviceState;
-import com.hq.jadb.constant.FileType;
-import com.hq.jadb.model.Device;
-import com.hq.jadb.model.DeviceApp;
-import com.hq.jadb.model.DeviceData;
-import com.hq.jadb.model.File;
-import com.hq.jadb.service.AdbService;
-import com.hq.jadb.util.DeviceUtils;
-import com.hq.jadb.util.Parsing;
+import com.hq.jadb.adb.config.AdbConfig;
+import com.hq.jadb.device.constant.Command;
+import com.hq.jadb.device.constant.DeviceLevel;
+import com.hq.jadb.device.constant.DeviceState;
+import com.hq.jadb.device.constant.FileType;
+import com.hq.jadb.device.utils.DeviceUtils;
+import com.hq.jadb.device.model.Device;
+import com.hq.jadb.device.model.DeviceApp;
+import com.hq.jadb.device.model.DeviceData;
+import com.hq.jadb.device.model.File;
+import com.hq.jadb.adb.service.AdbService;
+import com.hq.jadb.device.utils.Parsing;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public abstract class DeviceController implements DeviceInterface{
+public abstract class DeviceController implements DeviceInterface {
     private final AdbService adbService;
     private DeviceUtils deviceUtils;
     protected Device device;

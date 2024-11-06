@@ -1,9 +1,9 @@
-package com.hq.jadb.util;
+package com.hq.jadb.device.utils;
 
-import com.hq.jadb.constant.DeviceLevel;
-import com.hq.jadb.constant.DeviceState;
-import com.hq.jadb.constant.FileType;
-import com.hq.jadb.model.Device;
+import com.hq.jadb.device.constant.DeviceLevel;
+import com.hq.jadb.device.constant.DeviceState;
+import com.hq.jadb.device.constant.FileType;
+import com.hq.jadb.device.model.Device;
 
 import java.util.ArrayList;
 import java.util.List;

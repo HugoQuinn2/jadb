@@ -1,21 +1,16 @@
-package com.hq.jadb.controller;
+package com.hq.jadb.adb.controller;
 
-import com.hq.jadb.config.AdbConfig;
-import com.hq.jadb.constant.Command;
-import com.hq.jadb.constant.DeviceLevel;
-import com.hq.jadb.constant.DeviceState;
-import com.hq.jadb.model.Device;
-import com.hq.jadb.model.DeviceApp;
-import com.hq.jadb.model.DeviceData;
-import com.hq.jadb.model.File;
-import com.hq.jadb.service.AdbService;
-import com.hq.jadb.util.Parsing;
+import com.hq.jadb.device.constant.Command;
+import com.hq.jadb.device.constant.DeviceLevel;
+import com.hq.jadb.device.constant.DeviceState;
+import com.hq.jadb.device.model.Device;
+import com.hq.jadb.adb.service.AdbService;
+import com.hq.jadb.device.utils.Parsing;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
 
-public class AdbController implements AdbInterface{
+public class AdbController implements AdbInterface {
     private final AdbService  adbService;
     protected Device device;
 

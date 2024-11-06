@@ -1,7 +1,7 @@
-import com.hq.jadb.controller.AdbController;
-import com.hq.jadb.model.Device;
-import com.hq.jadb.model.DeviceApp;
-import com.hq.jadb.model.File;
+import com.hq.jadb.adb.controller.AdbController;
+import com.hq.jadb.device.model.Device;
+import com.hq.jadb.device.model.DeviceApp;
+import com.hq.jadb.device.model.File;
 import org.junit.Test;
 
 import java.util.List;

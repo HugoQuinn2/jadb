@@ -1,12 +1,9 @@
-package com.hq.jadb.model;
+package com.hq.jadb.device.model;
 
-import com.hq.jadb.constant.DeviceLevel;
-import com.hq.jadb.constant.DeviceState;
-import com.hq.jadb.controller.AdbController;
-import com.hq.jadb.controller.DeviceController;
+import com.hq.jadb.device.constant.DeviceLevel;
+import com.hq.jadb.device.constant.DeviceState;
+import com.hq.jadb.device.controller.DeviceController;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter

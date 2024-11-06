@@ -1,6 +1,6 @@
-package com.hq.jadb.model;
+package com.hq.jadb.device.model;
 
-import com.hq.jadb.constant.FileType;
+import com.hq.jadb.device.constant.FileType;
 import lombok.*;
 
 import java.util.Date;

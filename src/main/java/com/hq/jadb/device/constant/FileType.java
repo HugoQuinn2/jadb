@@ -1,4 +1,4 @@
-package com.hq.jadb.constant;
+package com.hq.jadb.device.constant;
 
 public enum FileType {
     FOLDER,

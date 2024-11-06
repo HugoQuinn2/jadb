@@ -1,9 +1,9 @@
-package com.hq.jadb.util;
+package com.hq.jadb.device.utils;
 
-import com.hq.jadb.constant.Command;
-import com.hq.jadb.model.Device;
-import com.hq.jadb.model.DeviceApp;
-import com.hq.jadb.service.AdbService;
+import com.hq.jadb.device.constant.Command;
+import com.hq.jadb.device.model.Device;
+import com.hq.jadb.device.model.DeviceApp;
+import com.hq.jadb.adb.service.AdbService;
 
 import java.util.List;
 
