@@ -8,11 +8,22 @@
     <artifactId>jadb</artifactId>
     <version>0.1.1</version>
 
+    <name>jadb</name>
+    <url>http://maven.apache.org</url>
+
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub afikri-code Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/HugoQuinn2/jadb</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <!-- JUnit 5 (Jupiter) -->
