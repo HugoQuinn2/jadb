@@ -6,6 +6,15 @@ JADB is a java library that uses the official Android tools (adb), with library 
 
 ## Getting started
 
+### Maven
+
+```xml
+<dependency>
+  <groupId>com.hq</groupId>
+  <artifactId>jadb</artifactId>
+</dependency>
+```
+
 Connect an Android device(s) to the computer and enable the USB debug of the device and get a list of connected devices 
 
 ```java
