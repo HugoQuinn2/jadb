@@ -16,6 +16,7 @@ import com.hq.jadb.device.utils.Parsing;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -149,29 +150,30 @@ public abstract class DeviceController implements DeviceInterface {
             List<String> command = Parsing.buildCommand(commandText);
             String response = adbService.executeCommand(command);
 
-            String[] reformatStat = Parsing.extractOutputStat(response).split(",");
+            String[] reformatStat = Objects.requireNonNull(Parsing.extractOutputStat(response)).split(",");
 
-            try {
-                // FileType, User, Size, Date, Name
-                File file = File
-                        .builder()
-                        .fileType(Parsing.textToFileType(reformatStat[0]))
-                        .user(reformatStat[1])
-                        .size(Long.parseLong(reformatStat[2]))
-                        .lastModify(format.parse(reformatStat[3]))
-                        .fileName(reformatStat[4])
-                        .path(remotePath)
-                        .absolutePath(absolutePath)
-                        .build();
+            if (reformatStat.length == 5) {
+                try {
+                    // FileType, User, Size, Date, Name
+                    File file = File
+                            .builder()
+                            .fileType(Parsing.textToFileType(reformatStat[0]))
+                            .user(reformatStat[1])
+                            .size(Long.parseLong(reformatStat[2]))
+                            .lastModify(format.parse(reformatStat[3]))
+                            .fileName(lsFile)
+                            .path(remotePath)
+                            .absolutePath(absolutePath)
+                            .build();
 
-                if (file.getFileType().equals(FileType.FOLDER))
-                    file.setAbsolutePath(file.getAbsolutePath() + "/");
+                    if (file.getFileType().equals(FileType.FOLDER))
+                        file.setAbsolutePath(file.getAbsolutePath() + "/");
 
-                fileDevices.add(file);
-            } catch (Exception e) {
-                System.err.println(e);
+                    fileDevices.add(file);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
             }
-
         }
 
         return fileDevices;

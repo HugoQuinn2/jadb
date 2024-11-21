@@ -124,10 +124,23 @@ public class Parsing {
         return appName;
     }
 
-    public static String extractOutputStat(String output) {
+    public static String extractOutputStat(String output)  {
         String[] data = output.split(",");
+
+        FileType fileType = data.length > 4 ? getFileType(data[4]) : null;
+        String user = data.length > 2 ? data[2] : null;
+        String size = data.length > 1 ? data[1] : null;
+        String date = data.length > 3 ? data[3] : null;
+        String name = data.length > 0 ? List.of(data[0].split("/")).get(List.of(data[0].split("/")).size() - 1) : "N/A";
+
         // File, Size B, User, Last Modify, Permission -> FileType, User, Size, Date, Name
-        return  String.format("%s,%s,%s,%s,%s", getFileType(data[4]), data[2], data[1], data[3], List.of(data[0].split("/")).getLast() );
+        return  String.format("%s,%s,%s,%s,%s",
+                fileType,
+                user,
+                size,
+                date,
+                name
+        );
     }
 
     private static FileType getFileType(String file) {
