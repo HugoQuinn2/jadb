@@ -61,3 +61,14 @@ DeviceData (
   androidVersion=14
 )
 ```
+## Special Functions
+
+| Function        | Required                                | Retorned           | Description                                                             | 
+| --------------- | --------------------------------------- | ------------------ | ----------------------------------------------------------------------- |
+| ping()          | String (IP)                             | Boolean            | Make a ping from device and verify connection                           |
+| install()       | String (pathApk)                        | Boolean            | Install an Andrid app (.apk)                                            |
+| uninstall()     | String (packageApp) or DeviceApp        | Boolean            | Uninstall an Android app with package app or DeviceApp object           |
+| pull()          | String (remotePath), String (localPath) | Boolean            | Pull a remote file to a local path                                      |
+| push()          | String (localPath), String (remotePath) | Boolean            | Push a local file to a remote path                                      |
+| getFilesFrom()  | String (remotePath) or File (FOLDER)    | List of File       | Get a list of files from remote path or from a object File type FOLDER  |
+| getDeviceApps() | Null                                    | List of DeviceApp  | Get a list of apps (appName, appPackage & baseApk)                      |
