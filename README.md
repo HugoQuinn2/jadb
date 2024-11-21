@@ -1,12 +1,14 @@
-# JADB
+<p align="center">
+  <a href="https://github.com/HugoQuinn2/jadb">
+    <img src="https://github.com/user-attachments/assets/f5659d31-7d8b-49d0-869b-b1fd465af03a" alt="Logo">
+  </a>
+</p>
 
-![JADB Lib 150x150](https://github.com/user-attachments/assets/f5659d31-7d8b-49d0-869b-b1fd465af03a)
+<p align="center">
+JADB is a java library that uses the official <a href="https://developer.android.com/tools/adb?hl=es-419"> Android tools (adb) </a>, with library you can establish a USB connection with an Android device and change device properties or get information about it.
+</p>
 
-JADB is a java library that uses the official Android tools (adb), with library you can establish a USB connection with an Android device and change device properties or get information about it
-
-## Getting started
-
-### Maven
+## Maven
 
 ```xml
 <dependency>
@@ -14,6 +16,8 @@ JADB is a java library that uses the official Android tools (adb), with library 
   <artifactId>jadb</artifactId>
 </dependency>
 ```
+
+## Getting started
 
 Connect an Android device(s) to the computer and enable the USB debug of the device and get a list of connected devices 
 
