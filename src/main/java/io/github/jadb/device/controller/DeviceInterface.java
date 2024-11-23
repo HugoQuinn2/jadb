@@ -1,8 +1,8 @@
-package com.hq.jadb.device.controller;
+package io.github.jadb.device.controller;
 
-import com.hq.jadb.device.model.DeviceApp;
-import com.hq.jadb.device.model.DeviceData;
-import com.hq.jadb.device.model.File;
+import io.github.jadb.device.model.DeviceApp;
+import io.github.jadb.device.model.DeviceData;
+import io.github.jadb.device.model.File;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.hq.jadb.adb.controller;
+package io.github.jadb.adb.controller;
 
-import com.hq.jadb.device.model.Device;
+import io.github.jadb.device.model.Device;
 
 import java.util.List;
 

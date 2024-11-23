@@ -1,17 +1,17 @@
-package com.hq.jadb.device.controller;
+package io.github.jadb.device.controller;
 
-import com.hq.jadb.adb.config.AdbConfig;
-import com.hq.jadb.device.constant.Command;
-import com.hq.jadb.device.constant.DeviceLevel;
-import com.hq.jadb.device.constant.DeviceState;
-import com.hq.jadb.device.constant.FileType;
-import com.hq.jadb.device.utils.DeviceUtils;
-import com.hq.jadb.device.model.Device;
-import com.hq.jadb.device.model.DeviceApp;
-import com.hq.jadb.device.model.DeviceData;
-import com.hq.jadb.device.model.File;
-import com.hq.jadb.adb.service.AdbService;
-import com.hq.jadb.device.utils.Parsing;
+import io.github.jadb.adb.config.AdbConfig;
+import io.github.jadb.device.constant.Command;
+import io.github.jadb.device.constant.DeviceLevel;
+import io.github.jadb.device.constant.DeviceState;
+import io.github.jadb.device.constant.FileType;
+import io.github.jadb.device.utils.DeviceUtils;
+import io.github.jadb.device.model.Device;
+import io.github.jadb.device.model.DeviceApp;
+import io.github.jadb.device.model.DeviceData;
+import io.github.jadb.device.model.File;
+import io.github.jadb.adb.service.AdbService;
+import io.github.jadb.device.utils.Parsing;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

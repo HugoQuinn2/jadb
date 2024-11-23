@@ -1,9 +1,9 @@
-package com.hq.jadb.device.utils;
+package io.github.jadb.device.utils;
 
-import com.hq.jadb.device.constant.DeviceLevel;
-import com.hq.jadb.device.constant.DeviceState;
-import com.hq.jadb.device.constant.FileType;
-import com.hq.jadb.device.model.Device;
+import io.github.jadb.device.constant.DeviceLevel;
+import io.github.jadb.device.constant.DeviceState;
+import io.github.jadb.device.constant.FileType;
+import io.github.jadb.device.model.Device;
 
 import java.util.ArrayList;
 import java.util.List;

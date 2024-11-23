@@ -1,4 +1,4 @@
-package com.hq.jadb.device.constant;
+package io.github.jadb.device.constant;
 
 public enum Command {
     PING("-s %s shell ping -c 1 %s"),

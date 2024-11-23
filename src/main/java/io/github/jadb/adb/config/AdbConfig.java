@@ -1,4 +1,4 @@
-package com.hq.jadb.adb.config;
+package io.github.jadb.adb.config;
 
 public class AdbConfig {
     public static final String ADB_PATH = "adb/adb.exe";
