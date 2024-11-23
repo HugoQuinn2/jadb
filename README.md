@@ -12,8 +12,9 @@ JADB is a java library that uses the official <a href="https://developer.android
 
 ```xml
 <dependency>
-  <groupId>com.hq</groupId>
-  <artifactId>jadb</artifactId>
+    <groupId>io.github.hugoquinn2</groupId>
+    <artifactId>jadb</artifactId>
+    <version>0.1.1</version>
 </dependency>
 ```
 
@@ -31,10 +32,10 @@ List<Device> device = adbController.getDevices();
 Device (
   deviceName=emulator-5554, 
   serial=emulator-5554,
-  deviceLevel=ROOT, 
-  deviceState=DEVICE, 
+  deviceLevel=ROOT, //ROOT & SHELL
+  deviceState=DEVICE, // DEVICE, NO_DEVICE & OFFLINE
   model=Android SDK built for x86,
-  manufacturer=unknown
+  manufacturer=samsung
 )
 ```
 
@@ -56,7 +57,7 @@ DeviceData (
   mac=FF:FF:FF:FF:FF:FF, 
   storage=122829576, // KB
   storageUsed=25256456, // KB
-  androidId=49f31805fa6516d1, 
+  androidId=XXXXXXXXXXXXXXXX, 
   simContract=AT&T, 
   androidVersion=14
 )
