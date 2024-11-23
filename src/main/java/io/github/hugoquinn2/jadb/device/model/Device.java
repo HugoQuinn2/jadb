@@ -1,8 +1,8 @@
-package io.github.jadb.device.model;
+package io.github.hugoquinn2.jadb.device.model;
 
-import io.github.jadb.device.constant.DeviceLevel;
-import io.github.jadb.device.constant.DeviceState;
-import io.github.jadb.device.controller.DeviceController;
+import io.github.hugoquinn2.jadb.device.constant.DeviceLevel;
+import io.github.hugoquinn2.jadb.device.constant.DeviceState;
+import io.github.hugoquinn2.jadb.device.controller.DeviceController;
 import lombok.*;
 
 @Getter

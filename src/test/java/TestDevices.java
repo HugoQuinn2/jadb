@@ -1,7 +1,7 @@
-import io.github.jadb.adb.controller.AdbController;
-import io.github.jadb.device.model.Device;
-import io.github.jadb.device.model.DeviceApp;
-import io.github.jadb.device.model.File;
+import io.github.hugoquinn2.jadb.adb.controller.AdbController;
+import io.github.hugoquinn2.jadb.device.model.Device;
+import io.github.hugoquinn2.jadb.device.model.DeviceApp;
+import io.github.hugoquinn2.jadb.device.model.File;
 import org.junit.Test;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package io.github.jadb.device.constant;
+package io.github.hugoquinn2.jadb.device.constant;
 
 public enum FileType {
     FOLDER,

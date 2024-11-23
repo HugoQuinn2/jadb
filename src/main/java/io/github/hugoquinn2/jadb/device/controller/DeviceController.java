@@ -1,17 +1,17 @@
-package io.github.jadb.device.controller;
+package io.github.hugoquinn2.jadb.device.controller;
 
-import io.github.jadb.adb.config.AdbConfig;
-import io.github.jadb.device.constant.Command;
-import io.github.jadb.device.constant.DeviceLevel;
-import io.github.jadb.device.constant.DeviceState;
-import io.github.jadb.device.constant.FileType;
-import io.github.jadb.device.utils.DeviceUtils;
-import io.github.jadb.device.model.Device;
-import io.github.jadb.device.model.DeviceApp;
-import io.github.jadb.device.model.DeviceData;
-import io.github.jadb.device.model.File;
-import io.github.jadb.adb.service.AdbService;
-import io.github.jadb.device.utils.Parsing;
+import io.github.hugoquinn2.jadb.adb.config.AdbConfig;
+import io.github.hugoquinn2.jadb.device.constant.Command;
+import io.github.hugoquinn2.jadb.device.constant.DeviceLevel;
+import io.github.hugoquinn2.jadb.device.constant.DeviceState;
+import io.github.hugoquinn2.jadb.device.constant.FileType;
+import io.github.hugoquinn2.jadb.device.utils.DeviceUtils;
+import io.github.hugoquinn2.jadb.device.model.Device;
+import io.github.hugoquinn2.jadb.device.model.DeviceApp;
+import io.github.hugoquinn2.jadb.device.model.DeviceData;
+import io.github.hugoquinn2.jadb.device.model.File;
+import io.github.hugoquinn2.jadb.adb.service.AdbService;
+import io.github.hugoquinn2.jadb.device.utils.Parsing;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

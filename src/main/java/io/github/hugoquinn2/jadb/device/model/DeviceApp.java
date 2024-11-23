@@ -1,4 +1,4 @@
-package io.github.jadb.device.model;
+package io.github.hugoquinn2.jadb.device.model;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,11 +1,11 @@
-package io.github.jadb.adb.controller;
+package io.github.hugoquinn2.jadb.adb.controller;
 
-import io.github.jadb.device.constant.Command;
-import io.github.jadb.device.constant.DeviceLevel;
-import io.github.jadb.device.constant.DeviceState;
-import io.github.jadb.device.model.Device;
-import io.github.jadb.adb.service.AdbService;
-import io.github.jadb.device.utils.Parsing;
+import io.github.hugoquinn2.jadb.device.constant.Command;
+import io.github.hugoquinn2.jadb.device.constant.DeviceLevel;
+import io.github.hugoquinn2.jadb.device.constant.DeviceState;
+import io.github.hugoquinn2.jadb.device.model.Device;
+import io.github.hugoquinn2.jadb.adb.service.AdbService;
+import io.github.hugoquinn2.jadb.device.utils.Parsing;
 
 import java.util.ArrayList;
 import java.util.List;

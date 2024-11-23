@@ -1,6 +1,6 @@
-package io.github.jadb.device.model;
+package io.github.hugoquinn2.jadb.device.model;
 
-import io.github.jadb.device.constant.FileType;
+import io.github.hugoquinn2.jadb.device.constant.FileType;
 import lombok.*;
 
 import java.util.Date;

@@ -1,6 +1,6 @@
-package io.github.jadb.adb.service;
+package io.github.hugoquinn2.jadb.adb.service;
 
-import io.github.jadb.adb.config.AdbConfig;
+import io.github.hugoquinn2.jadb.adb.config.AdbConfig;
 
 import java.io.BufferedReader;
 import java.io.File;
