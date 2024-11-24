@@ -16,6 +16,10 @@ public class Device extends DeviceController {
     private String model;
     private String manufacturer;
 
+    public Device() {
+        super(null);
+    }
+
     public Device(String deviceName, String serial, DeviceLevel deviceLevel, DeviceState deviceState, String model, String manufacturer) {
         super(null);
         this.deviceName = deviceName;

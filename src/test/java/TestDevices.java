@@ -12,7 +12,8 @@ public class TestDevices {
     public void devices() {
         adbController = new AdbController();
         List<Device> device = adbController.getDevices();
-        System.out.println(device.toString());
+        Device device1 = new Device();
+        System.out.println(device.toString() + device1);
     }
 
     @Test
