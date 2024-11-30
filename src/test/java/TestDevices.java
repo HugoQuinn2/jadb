@@ -12,8 +12,7 @@ public class TestDevices {
     public void devices() {
         adbController = new AdbController();
         List<Device> device = adbController.getDevices();
-        Device device1 = new Device();
-        System.out.println(device.toString() + device1);
+        System.out.println(device);
     }
 
     @Test
@@ -92,7 +91,8 @@ public class TestDevices {
     public void getFilesFrom() {
         adbController = new AdbController();
         Device device = adbController.getDevices().getFirst();
-        List<File> files = device.getFilesFrom("/");
+        List<File> files = device.getFilesFrom("/storage/emulated/0/Podcasts/");
+//        List<File> files = device.getFilesFrom("/data/");
 
         System.out.println(files);
     }

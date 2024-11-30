@@ -23,6 +23,7 @@ public interface DeviceInterface {
     //*************** Action functions *******************//
     boolean ping(String ip);
     String shell(String command);
+    String adb(String command);
     boolean install(String pathApk);
     boolean uninstall(String packageApp);
     boolean uninstall(DeviceApp deviceApp);

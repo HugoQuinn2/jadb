@@ -1,10 +1,10 @@
 package io.github.hugoquinn2.jadb.device.controller;
 
 import io.github.hugoquinn2.jadb.adb.config.AdbConfig;
-import io.github.hugoquinn2.jadb.device.constant.Command;
-import io.github.hugoquinn2.jadb.device.constant.DeviceLevel;
-import io.github.hugoquinn2.jadb.device.constant.DeviceState;
-import io.github.hugoquinn2.jadb.device.constant.FileType;
+import io.github.hugoquinn2.jadb.device.constant.*;
+import io.github.hugoquinn2.jadb.device.exceptions.DeviceNotAvailable;
+import io.github.hugoquinn2.jadb.device.exceptions.NoResponse;
+import io.github.hugoquinn2.jadb.device.exceptions.PermissionDenied;
 import io.github.hugoquinn2.jadb.device.utils.DeviceUtils;
 import io.github.hugoquinn2.jadb.device.model.Device;
 import io.github.hugoquinn2.jadb.device.model.DeviceApp;
@@ -38,40 +38,47 @@ public abstract class DeviceController implements DeviceInterface {
     // *****************************************************************
     @Override
     public String getIp(){
-        String responseWLAN0 = adbService.executeCommand(Parsing.buildCommand(Command.WLAN0.command(device.getDeviceName())));
+        String command = Command.WLAN0.command();
+        String responseWLAN0 = shell(command);
         return Parsing.extractIp(responseWLAN0);
     }
 
     @Override
     public String getMac(){
-        String responseWLAN0 = adbService.executeCommand(Parsing.buildCommand(Command.WLAN0.command(device.getDeviceName())));
+        String command = Command.WLAN0.command();
+        String responseWLAN0 = shell(command);
         return Parsing.extractMAC(responseWLAN0);
     }
 
     @Override
     public String getSimContract(){
-        return adbService.executeCommand(Parsing.buildCommand(Command.SIM_CONTRACT.command(device.getDeviceName())));
+        String command = Command.SIM_CONTRACT.command();
+        return shell(command);
     }
 
     @Override
     public String getAndroidId(){
-        return adbService.executeCommand(Parsing.buildCommand(Command.ANDROID_ID.command(device.getDeviceName())));
+        String command = Command.ANDROID_ID.command();
+        return shell(command);
     }
 
     @Override
     public String getAndroidVersion(){
-        return adbService.executeCommand(Parsing.buildCommand(Command.ANDROID_VERSION.command(device.getDeviceName())));
+        String command = Command.ANDROID_VERSION.command();
+        return shell(command);
     }
 
     @Override
     public long getStorage(){
-        String responseStorage = adbService.executeCommand(Parsing.buildCommand(Command.STORAGE.command(device.getDeviceName())));
+        String command = Command.STORAGE.command();
+        String responseStorage = shell(command);
         return Parsing.extractStorage(responseStorage);
     }
 
     @Override
     public long getStorageUsed(){
-        String responseStorage = adbService.executeCommand(Parsing.buildCommand(Command.STORAGE.command(device.getDeviceName())));
+        String command = Command.STORAGE.command();
+        String responseStorage = shell(command);
         return Parsing.extractStorageUsed(responseStorage);
     }
 
@@ -114,7 +121,7 @@ public abstract class DeviceController implements DeviceInterface {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e);
+            throw new RuntimeException("Error extracting applications: " + e.getMessage());
         } finally {
             executor.shutdown();
         }
@@ -124,8 +131,12 @@ public abstract class DeviceController implements DeviceInterface {
 
     @Override
     public List<File> getFilesFrom(File file) {
-        if (!file.getFileType().equals(FileType.FOLDER))
-            return null;
+        if (file == null)
+            throw new NullPointerException(ExceptionMessage.NULL_POINTER.message("File"));
+        else if (file.getAbsolutePath() == null)
+            throw new NullPointerException(ExceptionMessage.NULL_POINTER.message("absolutePath"));
+        else if (!file.getFileType().equals(FileType.FOLDER))
+            throw new NoResponse(ExceptionMessage.FILE_NOT_FOLDER.message(file.getFileType().toString()));
 
         return getFilesFrom(file.getAbsolutePath());
     }
@@ -136,9 +147,12 @@ public abstract class DeviceController implements DeviceInterface {
             return null;
 
         List<File> fileDevices = new ArrayList<>();
-        List<String> lsFiles = deviceUtils.lsM(device,remotePath);
+        List<String> lsFiles = lsM(remotePath);
         String formatStat = "'%n,%s,%U,%y,%A'";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        if (lsFiles.size() == 1 && lsFiles.getFirst().isBlank())
+            throw new NoResponse(String.format("%s: Folder empty or permission no available", remotePath));
 
         for (String lsFile : lsFiles) {
             String absolutePath = remotePath + lsFile;
@@ -147,8 +161,7 @@ public abstract class DeviceController implements DeviceInterface {
                     formatStat,
                     absolutePath);
 
-            List<String> command = Parsing.buildCommand(commandText);
-            String response = adbService.executeCommand(command);
+            String response = shell(commandText);
 
             String[] reformatStat = Objects.requireNonNull(Parsing.extractOutputStat(response)).split(",");
 
@@ -276,9 +289,43 @@ public abstract class DeviceController implements DeviceInterface {
 
     @Override
     public String shell(String command) {
+        if (!device.getDeviceState().equals(DeviceState.DEVICE))
+            throw new DeviceNotAvailable(
+                    ExceptionMessage.DEVICE_NOT_AVAILABLE.message(
+                            DeviceState.DEVICE.toString(),
+                            device.getDeviceState().toString()
+                    )
+            );
+
         String newCommand = String.format("-s %s shell %s", device.getDeviceName(), command);
         List<String> commandList = Parsing.buildCommand(newCommand);
+        String response = adbService.executeCommand(commandList);
+
+        if (response.contains("permission denied"))
+            throw new PermissionDenied(
+                    ExceptionMessage.PERMISSION_DENIED.message(
+                            device.getDeviceName(),
+                            command
+                    )
+            );
+
+        return response;
+    }
+
+    @Override
+    public String adb(String command) {
+        String newCommand = String.format("-s %s %s", device.getDeviceName(), command);
+        List<String> commandList = Parsing.buildCommand(newCommand);
         return adbService.executeCommand(commandList);
+    }
+
+    public List<String> lsM(String from) {
+        String command = Command.LS_M.command(from);
+        return List.of(shell(command)
+                .replaceAll("\n", "")
+                .replaceAll("\r", "")
+                .replace(" ", "")
+                .split(","));
     }
 
 }

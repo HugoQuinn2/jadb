@@ -40,12 +40,4 @@ public class DeviceUtils {
         return null;
     }
 
-    public List<String> lsM(Device device,String from) {
-        List<String> command = Parsing.buildCommand(Command.LS_M.command(device.getDeviceName(), from));
-        return List.of(adbService.executeCommand(command)
-                .replaceAll("\n", "")
-                .replaceAll("\r", "")
-                .replace(" ", "")
-                .split(","));
-    }
 }

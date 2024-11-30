@@ -49,8 +49,12 @@ public class Parsing {
             return DeviceState.DEVICE;
         if (state.contains("offline"))
             return DeviceState.OFFLINE;
+        if (state.contains("unauthorized"))
+            return DeviceState.UNAUTHORIZED;
+        if (state.contains("no_device"))
+            return DeviceState.NO_DEVICE;
 
-        return null;
+        return DeviceState.UNRECOGNIZED;
     }
 
     public static String extractIp(String response) {
