@@ -14,7 +14,7 @@ JADB is a java library that uses the official <a href="https://developer.android
 <dependency>
     <groupId>io.github.hugoquinn2</groupId>
     <artifactId>jadb</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.2</version>
 </dependency>
 ```
 
