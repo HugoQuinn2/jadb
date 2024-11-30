@@ -6,7 +6,7 @@
 
     <groupId>io.github.hugoquinn2</groupId>
     <artifactId>jadb</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.2</version>
 
     <name>jadb</name>
     <description>JADB is a java library that uses the official Android tools (adb) , with library you can establish a USB connection with an Android device and change device properties or get information about it.</description>
